@@ -24,7 +24,6 @@ function setAttribute(element,attributes){
 
 function createCountriesElem(countries){
     countries.forEach(country => {
-        
         const countryContainer=document.createElement('div');
         countryContainer.className="flag";
 
@@ -44,8 +43,6 @@ function createCountriesElem(countries){
 
         flagsCont.append(countryContainer);
     });
-    main.classList.toggle("hidden");
-    loader.classList.toggle("hidden");
 }
 
 form.addEventListener("submit",async function(evt){
@@ -65,11 +62,12 @@ form.addEventListener("submit",async function(evt){
     
     setAttribute(genderPic,{src:`./images/${gender.gender}.png`,alt:gender.gender});
     ageText.textContent=`Age : ${age.age}`;
-
-    if(nationality.country.length>0){
+    
+    try{
         const countries=await getCountiresData(nationality.country);
         createCountriesElem(countries);
-    }else{
+    }catch(err){
+    }finally{
         main.classList.toggle("hidden");
         loader.classList.toggle("hidden");
     }
