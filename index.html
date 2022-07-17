@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="./images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="./style.css">
+    <title>Name & Guess</title>
+</head>
+<body>
+    <header>
+        <h1 class="logo">Name & Guess</h1>
+    </header>
+    <main>
+        <form class="contsWidth">
+            <div class="inputBox">
+                <input aria-label="name" type="text" name="name" placeholder="Type Your Name" required>
+                <input type="submit" value="SUBMIT">
+            </div>
+        </form>
+        <div class="info contsWidth">
+            <div class="genderCont">
+                <img src="images/male.png" alt="gender_avatar" class="genderPic">
+            </div>
+            <h2 class="age">Try Now</h2>
+        </div>
+        <div class="flagsCont contsWidth">
+
+        </div>
+        <div class="namesContainer">
+            <h3>Empty!</h3>
+        </div>
+    </main>
+    <div class="loader hidden">
+        <img src="./images/loader.svg" alt="loading">
+    </div>
+    
+    <script src="script.js" type="module"></script>
+</body>
+</html>
