@@ -192,9 +192,5 @@ input[type=submit]{
     form{
         margin:75px auto 50px;
     }
-    h4{
-        font-size:.75rem;
-        text-align: center;
-    }
 }
 
