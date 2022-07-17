@@ -47,10 +47,11 @@ function createCountriesElem(countries){
 
 form.addEventListener("submit",async function(evt){
     evt.preventDefault();
+    const name=inputBox.value.toLowerCase();
     
     const names=JSON.parse(localStorage.getItem("names"));
-    if(names && !names.includes(inputBox.value) || names==null){
-        const newNames=names?[...names,inputBox.value]:[inputBox.value];
+    if(names && !names.includes(name) || names==null){
+        const newNames=names?[...names,name]:[name];
         localStorage.setItem("names",JSON.stringify(newNames));
     }
     loadNames();
@@ -58,11 +59,11 @@ form.addEventListener("submit",async function(evt){
     main.classList.toggle("hidden");
     loader.classList.toggle("hidden");
     flagsCont.replaceChildren([]);
-    const {gender,nationality,age}=await getNameDate(inputBox.value);
+    const {gender,nationality,age}=await getNameDate(name);
     
     setAttribute(genderPic,{src:`./images/${gender.gender}.png`,alt:gender.gender});
     ageText.textContent=`Age : ${age.age}`;
-    
+
     try{
         const countries=await getCountiresData(nationality.country);
         createCountriesElem(countries);
