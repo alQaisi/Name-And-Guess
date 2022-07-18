@@ -156,6 +156,11 @@ input[type=submit]{
     max-height:225px;
     overflow-y: scroll;
 }
+.SavedName:hover{
+    cursor: pointer;
+    text-decoration: line-through;
+    color: red;
+}
 @media screen and (max-width:860px){
     main{
         display:initial;
