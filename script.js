@@ -9,9 +9,11 @@ const main=document.querySelector("main");
 const loader=document.querySelector(".loader");
 const namesContainer=document.querySelector(".namesContainer");
 
+let store={};
+
 inputBox.addEventListener("keyup",function(evt){
     let {value}=evt.target;
-    value=value.replace(/\s/g, '');
+    value=value.replace(/[^a-z]/gi,'');
     evt.target.value=value;
 });
 function setAttribute(element,attributes){
@@ -20,6 +22,7 @@ function setAttribute(element,attributes){
     }
 }
 function createCountriesElem(countries){
+    flagsCont.replaceChildren([]);
     countries.forEach(country => {
         const countryContainer=document.createElement('div');
         countryContainer.className="flag";
@@ -46,36 +49,69 @@ form.addEventListener("submit",async function(evt){
     evt.preventDefault();
     const name=inputBox.value.toLowerCase();
     const names=JSON.parse(localStorage.getItem("names"));
+    
     if(names && !names.includes(name) || names==null){
         const newNames=names?[...names,name]:[name];
         localStorage.setItem("names",JSON.stringify(newNames));
     }
-    loadNames();
-    main.classList.toggle("hidden");
-    loader.classList.toggle("hidden");
-    flagsCont.replaceChildren([]);
-    const {gender,nationality,age}=await getNameDate(name);
-    setAttribute(genderPic,{src:`./images/${gender.gender}.png`,alt:gender.gender});
-    ageText.textContent=`Age : ${age.age}`;
-    try{
-        const countries=await getCountiresData(nationality.country);
-        createCountriesElem(countries);
-    }catch(err){
-    }finally{
-        main.classList.toggle("hidden");
-        loader.classList.toggle("hidden");
+    if(names && names.includes(name)){
+        return getStoredData(name);
     }
+    loadNames();
+    toggleMain();
+    const {gender,nationality,age}=await getNameDate(name);
+    if(!gender.gender){
+        deleteName(name);
+        location.reload();
+    }
+    setData(gender.gender,age.age);
+    getCountries(nationality.country)
 });
 
+async function getCountries(countries){
+    try{
+        const countriesData=await getCountiresData(countries);
+        store.countries=countriesData;
+        createCountriesElem(countriesData);
+        storeData(store);
+    }catch(err){
+    }finally{
+        toggleMain();
+    }
+}
+
+function setData(gender,age){
+    setAttribute(genderPic,{src:`./images/${gender}.png`,alt:gender});
+    ageText.textContent=`Age : ${age}`;
+    store={gender,age};
+}
+
+function toggleMain(){
+    main.classList.toggle("hidden");
+    loader.classList.toggle("hidden");
+}
 function deleteName(evt){
-    const name=evt.target?.id;
+    const name=typeof(evt)=="string"?evt:evt.target?.id;
     const names=JSON.parse(localStorage.getItem("names"));
     const index=names.indexOf(name);
     const newNames=names.slice(0,index).concat(names.slice(index+1));
+    const data=JSON.parse(localStorage.getItem("data"));
+    delete data[name];
     localStorage.setItem("names",JSON.stringify(newNames));
+    localStorage.setItem("data",JSON.stringify(data));
     loadNames();
 }
-
+function getStoredData(name){
+    const data=JSON.parse(localStorage.getItem("data"));
+    const userData=data[name];
+    setData(userData.gender,userData.age);
+    createCountriesElem(userData.countries);
+}
+function storeData(store){
+    const data=JSON.parse(localStorage.getItem("data"))
+    const name=inputBox.value.toLowerCase();
+    localStorage.setItem("data",JSON.stringify({...data,[name]:store}));
+}
 function loadNames(){
     const names=JSON.parse(localStorage.getItem("names"));
     names && namesContainer.replaceChildren([]);
